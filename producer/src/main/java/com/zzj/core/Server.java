@@ -11,18 +11,23 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 
 public class Server {
-    public static void main(String[] args) throws Exception{
-        ServerBootstrap serverBootstrap = new ServerBootstrap();
-        serverBootstrap.group(new NioEventLoopGroup())
-                .channel(NioServerSocketChannel.class)
-                .localAddress(new InetSocketAddress(8888))
-                .childHandler(new ChannelInitializer<SocketChannel>() {
-                    @Override
-                    protected void initChannel(SocketChannel socketChannel) {
-                        socketChannel.pipeline().addLast(new ServerHandler());
-                    }
-                });
-        ChannelFuture channelFuture = serverBootstrap.bind().sync();
-        channelFuture.channel().closeFuture().sync();
+    public static void main(String[] args) throws Exception {
+        NioEventLoopGroup group = new NioEventLoopGroup();
+        try {
+            ServerBootstrap serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(group)
+                    .channel(NioServerSocketChannel.class)
+                    .localAddress(new InetSocketAddress(8888))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        protected void initChannel(SocketChannel socketChannel) {
+                            socketChannel.pipeline().addLast(new ServerHandler());
+                        }
+                    });
+            ChannelFuture channelFuture = serverBootstrap.bind().sync();
+            channelFuture.channel().closeFuture().sync();
+        } finally {
+            group.shutdownGracefully();
+        }
     }
 }

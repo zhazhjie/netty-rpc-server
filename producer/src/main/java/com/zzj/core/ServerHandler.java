@@ -1,16 +1,13 @@
 package com.zzj.core;
 
-import io.netty.buffer.ByteBuf;
+import com.alibaba.fastjson.JSON;
+import entity.ProtocolData;
+import entity.User;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
-
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 public class ServerHandler  extends ChannelInboundHandlerAdapter {
     @Override
@@ -20,9 +17,11 @@ public class ServerHandler  extends ChannelInboundHandlerAdapter {
 //        String name = byteBuf.toString(CharsetUtil.UTF_8);
 //        System.out.print("name:"+name);
         UserServiceImpl userService = new UserServiceImpl();
-        String result = userService.sayHi("jack");
-        new ObjectOutputStream(new FileOutputStream("template"));
-        ctx.write(Unpooled.copiedBuffer(result,CharsetUtil.UTF_8));
+        User user = userService.getUserById(1L);
+        ProtocolData protocolData = new ProtocolData();
+        protocolData.setResultType(User.class);
+        protocolData.setResult(user);
+        ctx.write(Unpooled.copiedBuffer(JSON.toJSONString(protocolData),CharsetUtil.UTF_8));
     }
 
     @Override
@@ -33,5 +32,6 @@ public class ServerHandler  extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         cause.printStackTrace();
+        ctx.close();
     }
 }
