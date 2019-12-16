@@ -10,5 +10,6 @@ import java.util.concurrent.CountDownLatch;
 @Data
 public class ChannelConfig {
     public static ChannelHandlerContext ctx;
-    public static Map<Class, CountDownLatch> countDownLatchMap=new HashMap<>();
+    public static Map<Long, CountDownLatch> countDownLatchMap=new HashMap<>();
+    public static Map<Long, Object> resultMap=new HashMap<>();
 }

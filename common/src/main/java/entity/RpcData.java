@@ -7,11 +7,11 @@ import java.io.Serializable;
 
 @Setter
 @Getter
-public class ProtocolData implements Serializable {
+public class RpcData implements Serializable {
     private Long id;
-    private String proxy;
-    private String method;
-    private Object args;
+    private Class targetType;
+    private String methodName;
+    private Object[] args;
     private Object result;
     private Class resultType;
 }
