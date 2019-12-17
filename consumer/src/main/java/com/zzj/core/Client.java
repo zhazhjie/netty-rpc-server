@@ -9,26 +9,33 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 public class Client {
     public static void main(String[] args) throws Exception {
         new Client().start();
     }
+    private ExecutorService executor= Executors.newSingleThreadExecutor();
 
     public void start() throws Exception {
-        new Thread(() -> {
+        executor.execute(() -> {
             NioEventLoopGroup group = new NioEventLoopGroup();
             try {
                 Bootstrap bootstrap = new Bootstrap();
-                final ClientHandler clientHandler = new ClientHandler();
                 bootstrap.group(group)
                         .channel(NioSocketChannel.class)
                         .remoteAddress(new InetSocketAddress("127.0.0.1", 8888))
                         .handler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) {
-                                socketChannel.pipeline().addLast(clientHandler);
+                                socketChannel.pipeline()
+                                        .addLast(new RequestEncoder())
+                                        .addLast(new ClientHandler())
+                                        ;
                             }
                         });
                 ChannelFuture channelFuture = bootstrap.connect().sync();
@@ -39,6 +46,6 @@ public class Client {
                 log.info("结束");
                 group.shutdownGracefully();
             }
-        }).start();
+        });
     }
 }

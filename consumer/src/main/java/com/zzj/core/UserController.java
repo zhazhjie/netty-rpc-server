@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -21,7 +23,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/getUser")
-    public User getUser(){
+    public User getUser(HttpServletRequest request){
         log.info("getUser");
         User userById = userService.getUserById(1L);
         return userById;

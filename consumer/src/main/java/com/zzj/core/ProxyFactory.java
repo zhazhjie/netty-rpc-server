@@ -28,7 +28,7 @@ public class ProxyFactory {
             reqData.setArgsType(argsType);
             CountDownLatch countDownLatch = new CountDownLatch(1);
             ChannelConfig.countDownLatchMap.put(id, countDownLatch);
-            ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer(JSON.toJSONString(reqData), CharsetUtil.UTF_8));
+            ChannelConfig.ctx.writeAndFlush(reqData);
             boolean await = countDownLatch.await(10L, TimeUnit.SECONDS);
             if (!await) {
                 throw new TimeoutException("call producer timeout");
