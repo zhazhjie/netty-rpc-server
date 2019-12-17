@@ -1,4 +1,4 @@
-package entity;
+package com.zzj.entity;
 
 import lombok.Getter;
 import lombok.Setter;

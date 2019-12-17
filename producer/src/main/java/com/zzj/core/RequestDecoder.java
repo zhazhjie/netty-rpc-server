@@ -1,7 +1,7 @@
 package com.zzj.core;
 
 import com.alibaba.fastjson.JSON;
-import entity.RpcData;
+import com.zzj.entity.RpcData;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;

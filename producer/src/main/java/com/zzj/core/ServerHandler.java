@@ -1,42 +1,41 @@
 package com.zzj.core;
 
 import com.alibaba.fastjson.JSON;
-import entity.RpcData;
-import entity.User;
+import com.zzj.entity.ReqData;
+import com.zzj.entity.RespData;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntConsumer;
-import java.util.stream.Collectors;
 
-public class ServerHandler  extends ChannelInboundHandlerAdapter {
+public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.print(msg);
-        RpcData rpcData =  JSON.parseObject(((ByteBuf)msg).toString(CharsetUtil.UTF_8), RpcData.class);;
-        Class targetType = rpcData.getTargetType();
+        String byteStr = ((ByteBuf) msg).toString(CharsetUtil.UTF_8);
+        ReqData reqData = JSON.parseObject(byteStr, ReqData.class);
+        Class targetType = reqData.getTargetType();
+        //TODO 实例来源
         Object o = new UserServiceImpl();
-        Object[] args = rpcData.getArgs();
-        Class[] objects = Arrays.stream(args).map(v -> v.getClass()).toArray(Class[]::new);
-        Method method = targetType.getMethod(rpcData.getMethodName(), objects);
-        Object invoke = method.invoke(o, args);
-
-//        ByteBuf byteBuf = (ByteBuf) msg;
-//        String name = byteBuf.toString(CharsetUtil.UTF_8);
-//        System.out.print("name:"+name);
-        rpcData.setResult(invoke);
-        ctx.write(Unpooled.copiedBuffer(JSON.toJSONString(rpcData),CharsetUtil.UTF_8));
+        Object[] args = reqData.getArgs();
+        Class[] argsType = reqData.getArgsType();
+        Object[] realArgs = JSON.parseArray(JSON.toJSONString(args), argsType).toArray();
+        RespData respData = new RespData();
+        respData.setId(reqData.getId());
+        try {
+            Method method = targetType.getMethod(reqData.getMethodName(), argsType);
+            Object invoke = method.invoke(o, realArgs);
+            respData.setResult(JSON.toJSONString(invoke));
+            respData.setResultType(invoke == null ? null : invoke.getClass());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            respData.setSuccess(false);
+            respData.setMsg(e.getMessage());
+        }
+        ctx.write(Unpooled.copiedBuffer(JSON.toJSONString(respData), CharsetUtil.UTF_8));
     }
 
     @Override

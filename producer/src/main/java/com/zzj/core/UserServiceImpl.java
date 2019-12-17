@@ -1,7 +1,7 @@
 package com.zzj.core;
 
 import com.zzj.service.UserService;
-import entity.User;
+import com.zzj.entity.User;
 
 public class UserServiceImpl implements UserService {
     @Override
@@ -16,5 +16,10 @@ public class UserServiceImpl implements UserService {
         user.setName("aaa");
         user.setAge(99);
         return user;
+    }
+
+    @Override
+    public void doSomething() {
+        System.out.println("do something");
     }
 }

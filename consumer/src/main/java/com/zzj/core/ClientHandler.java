@@ -1,58 +1,47 @@
 package com.zzj.core;
 
 import com.alibaba.fastjson.JSON;
-import com.zzj.service.UserService;
-import entity.RpcData;
-import entity.User;
+import com.zzj.entity.RespData;
+import com.zzj.exception.RpcException;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.CharsetUtil;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.MethodInterceptor;
-import net.sf.cglib.proxy.MethodProxy;
+import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.Method;
-import java.util.concurrent.CountDownLatch;
-
+@Slf4j
+@ChannelHandler.Sharable
 public class ClientHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        ChannelConfig.ctx=ctx;
-        Thread thread = new Thread(() -> {
-            UserService userService = ProxyFactory.build(UserService.class);
-            User userById = userService.getUserById(12345678932145L);
-        });
-        thread.start();
-//        ctx.writeAndFlush(Unpooled.copiedBuffer("666",CharsetUtil.UTF_8));
-//        Enhancer enhancer = new Enhancer();
-//        enhancer.setSuperclass(UserService.class);
-//        enhancer.setCallback((MethodInterceptor) (o, method, objects, methodProxy) -> {
-//            Long id=System.currentTimeMillis();
-//            RpcData rpcData = new RpcData();
-//            rpcData.setArgs(objects);
-//            rpcData.setId(id);
-//            rpcData.setMethodName(method.getName());
-//            rpcData.setTargetType(UserService.class);
-////            CountDownLatch countDownLatch = new CountDownLatch(1);
-////            ChannelConfig.countDownLatchMap.put(System.currentTimeMillis(),countDownLatch);
-//            ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer(JSON.toJSONString(rpcData), CharsetUtil.UTF_8));
-//            ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer(JSON.toJSONString(rpcData), CharsetUtil.UTF_8));
-////            countDownLatch.await();
-//            return "666";
+        ChannelConfig.ctx = ctx;
+        log.info("启动成功");
+//        Thread thread = new Thread(() -> {
+//            UserService userService = ProxyFactory.build(UserService.class);
+//            User userById = userService.getUserById(1L);
+//            log.info("result:"+userById);
 //        });
-//        UserService userService = (UserService) enhancer.create();
-//        userService.sayHi("a");
-//        ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer("666", CharsetUtil.UTF_8));
-//        ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer("777", CharsetUtil.UTF_8));
-//        ChannelConfig.ctx.writeAndFlush(Unpooled.copiedBuffer("888", CharsetUtil.UTF_8));
+//        thread.start();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf) {
         String jsonStr = byteBuf.toString(CharsetUtil.UTF_8);
-        System.out.print(jsonStr);
+        RespData respData = JSON.parseObject(jsonStr, RespData.class);
+        if(respData.isSuccess()){
+            Object result = respData.getResultType() == null ? null : JSON.parseObject(respData.getResult(), respData.getResultType());
+            ChannelConfig.setResult(respData.getId(), result);
+        }else{
+            ChannelConfig.setResult(respData.getId(), new RpcException(respData.getMsg()));
+        }
+        log.info(jsonStr);
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        super.handlerRemoved(ctx);
+        log.info("remove");
     }
 }

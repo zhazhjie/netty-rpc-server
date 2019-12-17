@@ -1,6 +1,5 @@
-package entity;
+package com.zzj.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
