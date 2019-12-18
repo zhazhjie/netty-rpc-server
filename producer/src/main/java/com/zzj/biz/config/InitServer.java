@@ -21,7 +21,7 @@ public class InitServer implements InitializingBean {
     public void afterPropertiesSet() throws Exception{
         Map<String, Object> beansWithAnnotation = context.getBeansWithAnnotation(Service.class);
         BeanFactory.setBean(beansWithAnnotation);
-        new Server().start();
+        new Server().start(8888);
         log.info("server init!");
     }
 }

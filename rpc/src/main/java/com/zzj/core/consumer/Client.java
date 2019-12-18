@@ -18,27 +18,28 @@ import java.util.concurrent.Executors;
 @Slf4j
 public class Client {
     public static void main(String[] args) throws Exception {
-        new Client().start();
+        new Client().start("127.0.0.1", 8888);
     }
-    private ExecutorService executor= Executors.newSingleThreadExecutor();
 
-    public void start() {
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    public void start(String hostname, int port) {
         executor.execute(() -> {
             NioEventLoopGroup group = new NioEventLoopGroup();
             try {
                 Bootstrap bootstrap = new Bootstrap();
                 bootstrap.group(group)
                         .channel(NioSocketChannel.class)
-                        .remoteAddress(new InetSocketAddress("127.0.0.1", 8888))
+                        .remoteAddress(new InetSocketAddress(hostname, port))
                         .handler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) {
                                 socketChannel.pipeline()
-                                        .addLast(new LengthFrameDecoder(64*1024,0,4))
+                                        .addLast(new LengthFrameDecoder(64 * 1024, 0, 4))
                                         .addLast(new ResponseDecoder())
                                         .addLast(new RequestEncoder())
                                         .addLast(new ClientHandler())
-                                        ;
+                                ;
                             }
                         });
                 ChannelFuture channelFuture = bootstrap.connect().sync();

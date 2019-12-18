@@ -18,17 +18,17 @@ public class Server {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public static void main(String[] args) throws Exception {
-        new Server().start();
+        new Server().start(8888);
     }
 
-    public void start() {
+    public void start(int port) {
         executor.execute(() -> {
             NioEventLoopGroup group = new NioEventLoopGroup();
             try {
                 ServerBootstrap serverBootstrap = new ServerBootstrap();
                 serverBootstrap.group(group)
                         .channel(NioServerSocketChannel.class)
-                        .localAddress(new InetSocketAddress(8888))
+                        .localAddress(new InetSocketAddress(port))
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel socketChannel) {

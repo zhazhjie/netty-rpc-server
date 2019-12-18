@@ -11,7 +11,7 @@ public class InitClient implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception{
-        new Client().start();
+        new Client().start("127.0.0.1", 8888);
         log.info("client init!");
     }
 }
