@@ -6,8 +6,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 import java.net.InetSocketAddress;
 
@@ -23,8 +21,9 @@ public class Server {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline()
-                                    .addLast(new RequestDecoder())
                                     .addLast(new ResponseEncoder())
+                                    .addLast(new LengthFrameDecoder())
+                                    .addLast(new RequestDecoder())
                                     .addLast(new ServerHandler())
                             ;
                         }

@@ -1,34 +1,30 @@
 package com.zzj.core;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.zzj.entity.ReqData;
+import com.zzj.entity.RespData;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 
-public class RequestDecoder extends LengthFieldBasedFrameDecoder {
-    public RequestDecoder(){
-        super(64*1024,0,4);
-    }
+import java.util.List;
+
+public class RequestDecoder extends MessageToMessageDecoder<ReqData> {
     @Override
-    protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
-        int expectLength = in.readInt();
-//        int realLength=in.readableBytes();
-//        if(realLength!=expectLength){
-//            RespData respData = new RespData();
-//            respData.setSuccess(false);
-//            respData.setMsg("incomplete data");
-//            ctx.writeAndFlush(respData);
-//            return null;
-//        }
-        byte[] bytes = new byte[expectLength];
-        in.readBytes(bytes);
-        ReqData reqData = JSONObject.parseObject(bytes, ReqData.class);
+    protected void decode(ChannelHandlerContext ctx, ReqData reqData, List<Object> list) {
         Object[] args = reqData.getArgs();
         Class[] argsType = reqData.getArgsType();
-        Object[] realArgs = JSON.parseArray(JSON.toJSONString(args), argsType).toArray();
-        reqData.setArgs(realArgs);
-        return reqData;
+        try {
+            Object[] realArgs = JSON.parseArray(JSON.toJSONString(args), argsType).toArray();
+            reqData.setArgs(realArgs);
+            list.add(reqData);
+        }catch (Exception e){
+            RespData respData = new RespData();
+            respData.setId(reqData.getId());
+            respData.setSuccess(false);
+            respData.setMsg("invalid parameters");
+            ctx.writeAndFlush(respData);
+        }
     }
 }
