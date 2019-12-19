@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Slf4j
 @RestController
 @RequestMapping("/user")
@@ -19,21 +17,20 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/getUser")
-    public User getUser(HttpServletRequest request){
+    public User getUser(Long id) {
         log.info("getUser");
-        User userById = userService.getUserById(1L);
-        return userById;
+        return userService.getUserById(id);
     }
+
     @GetMapping("/sayHi")
-    public String sayHi(){
-        System.out.println("hi");
-        String jac = userService.sayHi("jac");
-        return jac;
+    public String sayHi(String name) {
+        log.info("sayHi");
+        return userService.sayHi(name);
     }
 
     @GetMapping("/doSomething")
-    public String doSomething(){
-        System.out.println("doSomething");
+    public String doSomething() {
+        log.info("doSomething");
         userService.doSomething();
         return "do";
     }

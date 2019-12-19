@@ -10,7 +10,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-@Data
 public class ChannelConfig {
     //通道上下文
     public static ChannelHandlerContext ctx;

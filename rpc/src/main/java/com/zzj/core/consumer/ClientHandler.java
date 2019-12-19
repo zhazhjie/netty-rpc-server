@@ -11,19 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 响应结果最终处理
  */
-@Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         ChannelConfig.ctx = ctx;
-//        log.info("启动成功");
-//        Thread thread = new Thread(() -> {
-//            UserService userService = ProxyFactory.build(UserService.class);
-//            User userById = userService.getUserById(1L);
-//        });
-//        thread.start();
-
 //        ChannelConfig.ctx.writeAndFlush(new ReqData());
 //        ChannelConfig.ctx.writeAndFlush(new ReqData());
     }
@@ -36,7 +28,6 @@ public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
         }else{
             throw new RpcException(respData.getMsg());
         }
-        log.info(respData.toString());
     }
 
     @Override
@@ -47,6 +38,5 @@ public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         super.handlerRemoved(ctx);
-//        log.info("remove");
     }
 }

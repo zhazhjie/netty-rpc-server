@@ -14,11 +14,9 @@ import java.lang.reflect.Method;
 /**
  * 请求最终处理
  */
-@Slf4j
 public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-//        log.info(msg.toString());
         ReqData reqData = (ReqData)msg;
         Class targetType = reqData.getTargetType();
         RespData respData = new RespData();
