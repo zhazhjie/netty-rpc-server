@@ -3,6 +3,7 @@ package com.zzj.core.consumer;
 import com.zzj.core.common.codec.LengthFrameDecoder;
 import com.zzj.core.common.codec.RequestEncoder;
 import com.zzj.core.common.codec.ResponseDecoder;
+import com.zzj.core.common.utils.ChannelConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -12,13 +13,31 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Slf4j
 public class Client {
     public static void main(String[] args) throws Exception {
-        new Client().start("127.0.0.1", 8888);
+//        new Client().start("127.0.0.1", 8888);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("666");
+            }
+        },5000);
+    }
+
+    public Client() {
+    }
+
+    public Client(long timeout) {
+        if (timeout <= 0) {
+            throw new IllegalArgumentException("timeout must be greater than zero!");
+        }
+        ChannelConfig.timeout = timeout;
     }
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();

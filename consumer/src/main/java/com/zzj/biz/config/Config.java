@@ -1,7 +1,7 @@
 package com.zzj.biz.config;
 
 import com.zzj.common.service.UserService;
-import com.zzj.core.consumer.ProxyFactory;
+import com.zzj.core.common.utils.ProxyFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

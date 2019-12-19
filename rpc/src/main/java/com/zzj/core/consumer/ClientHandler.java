@@ -2,13 +2,16 @@ package com.zzj.core.consumer;
 
 import com.zzj.core.common.entity.RespData;
 import com.zzj.core.common.exception.RpcException;
+import com.zzj.core.common.utils.ChannelConfig;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 响应结果最终处理
+ */
 @Slf4j
-@ChannelHandler.Sharable
 public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
 
     @Override
@@ -28,6 +31,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RespData respData) {
         if(respData.isSuccess()){
+            //成功响应，触发countDown();
             ChannelConfig.setResult(respData.getId(), respData.getResult());
         }else{
             throw new RpcException(respData.getMsg());

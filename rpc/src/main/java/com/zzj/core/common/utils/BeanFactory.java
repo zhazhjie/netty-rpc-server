@@ -4,6 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Bean工厂
+ * 暂时手动添加bean
+ */
 public class BeanFactory {
     private static Map<Class, Object> beanMap = new HashMap<>();
 

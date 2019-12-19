@@ -11,16 +11,20 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Method;
 
+/**
+ * 请求最终处理
+ */
 @Slf4j
 public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        log.info(msg.toString());
+//        log.info(msg.toString());
         ReqData reqData = (ReqData)msg;
         Class targetType = reqData.getTargetType();
         RespData respData = new RespData();
         respData.setId(reqData.getId());
         try {
+            //获取对应类型的Bean，触发对应方法
             Object o = BeanFactory.getBean(reqData.getTargetType());
             if(o==null){
                 throw new RpcException(ErrorMsg.CLASS_NOT_FOUND);
@@ -29,6 +33,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             Object invoke = method.invoke(o, reqData.getArgs());
             respData.setResult(invoke);
             respData.setResultType(invoke == null ? null : invoke.getClass());
+            //失败抛异常或响应失败结果？
         } catch (Exception e) {
             respData.setSuccess(false);
             respData.setMsg(e.getMessage());

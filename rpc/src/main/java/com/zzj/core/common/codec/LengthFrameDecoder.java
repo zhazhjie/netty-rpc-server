@@ -4,6 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
+/**
+ * 入站口
+ * 报文解码器
+ * 基于长度的协议
+ * (int)length+(json)body
+ */
 public class LengthFrameDecoder extends LengthFieldBasedFrameDecoder {
     public LengthFrameDecoder(int maxFrameLength,int lengthFieldOffset,int lengthFieldLength){
         super(maxFrameLength,lengthFieldOffset,lengthFieldLength);

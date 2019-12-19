@@ -1,4 +1,4 @@
-package com.zzj.core.consumer;
+package com.zzj.core.common.utils;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
@@ -11,10 +11,15 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Data
-class ChannelConfig {
+public class ChannelConfig {
+    //通道上下文
     public static ChannelHandlerContext ctx;
+    //请求CountDownLatch暂存处
     public static Map<Long, CountDownLatch> countDownLatchMap = new HashMap<>();
+    //响应结果暂存处
     public static Map<Long, Object> resultMap = new HashMap<>();
+    //请求超时时间
+    public static long timeout=10L;
 
     public static void setResult(Long requestId, Object result) {
         resultMap.put(requestId, result);
