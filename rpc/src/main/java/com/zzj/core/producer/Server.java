@@ -9,11 +9,13 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Slf4j
 public class Server {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
 
@@ -41,6 +43,7 @@ public class Server {
                             }
                         });
                 ChannelFuture channelFuture = serverBootstrap.bind().sync();
+                log.info("Server start success on port {}", port);
                 channelFuture.channel().closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();

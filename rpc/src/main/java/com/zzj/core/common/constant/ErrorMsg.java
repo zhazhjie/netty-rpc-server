@@ -1,8 +1,8 @@
 package com.zzj.core.common.constant;
 
 public class ErrorMsg {
-    public static String INVALID_PARAMS="invalid parameters!";
-    public static String INVALID_RESULT="abnormal response!";
-    public static String TIME_OUT="call producer timeout!";
-    public static String CLASS_NOT_FOUND="target class not found!";
+    public static String INVALID_PARAMS="Invalid parameters";
+    public static String INVALID_RESULT="Abnormal response";
+    public static String TIME_OUT="Call producer timeout";
+    public static String CLASS_NOT_FOUND="Interface %s implementation class not found";
 }

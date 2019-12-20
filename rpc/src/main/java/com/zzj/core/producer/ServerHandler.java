@@ -16,15 +16,15 @@ import java.lang.reflect.Method;
 public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ReqData reqData = (ReqData)msg;
+        ReqData reqData = (ReqData) msg;
         Class targetType = reqData.getTargetType();
         RespData respData = new RespData();
         respData.setId(reqData.getId());
         try {
             //获取对应类型的Bean，触发对应方法
             Object o = BeanFactory.getBean(reqData.getTargetType());
-            if(o==null){
-                throw new RpcException(ErrorMsg.CLASS_NOT_FOUND);
+            if (o == null) {
+                throw new RpcException(String.format(ErrorMsg.CLASS_NOT_FOUND, reqData.getTargetType()));
             }
             Method method = targetType.getMethod(reqData.getMethodName(), reqData.getArgsType());
             Object invoke = method.invoke(o, reqData.getArgs());

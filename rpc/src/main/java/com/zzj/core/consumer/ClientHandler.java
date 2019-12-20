@@ -5,10 +5,12 @@ import com.zzj.core.common.exception.RpcException;
 import com.zzj.core.common.utils.ChannelConfig;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 响应结果最终处理
  */
+@Slf4j
 public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
 
     @Override
