@@ -1,8 +1,8 @@
 package com.zzj.core.consumer;
 
+import com.zzj.core.common.constant.ErrorMsg;
 import com.zzj.core.common.entity.RespData;
 import com.zzj.core.common.exception.RpcException;
-import com.zzj.core.common.utils.ChannelConfig;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -22,16 +22,16 @@ public class ClientHandler extends SimpleChannelInboundHandler<RespData> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, RespData respData) {
-        if(respData.isSuccess()){
-            //成功响应，触发countDown();
-            ChannelConfig.setResult(respData.getId(), respData.getResult());
-        }else{
-            throw new RpcException(respData.getMsg());
+        //验证是否有对应的requestId
+        if (ChannelConfig.countDownLatchMap.get(respData.getId()) == null) {
+            throw new RpcException(ErrorMsg.INVALID_RESULT);
         }
+        ChannelConfig.successCallback(respData);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        System.out.print(1);
         cause.printStackTrace();
     }
 

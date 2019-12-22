@@ -1,6 +1,7 @@
 package com.zzj.core.common.exception;
 
 public class RpcException extends RuntimeException{
+    private Long reqId;
     private int code=500;
     private String msg;
     public RpcException(String msg){
@@ -11,10 +12,13 @@ public class RpcException extends RuntimeException{
         this(msg);
         this.code=code;
     }
-    public RpcException(int code,String msg,Throwable e){
-        super(msg,e);
-        this.code=code;
-        this.msg=msg;
+    public RpcException(Long reqId,String msg){
+        this(msg);
+        this.reqId=reqId;
+    }
+    public RpcException(Long reqId,int code,String msg){
+        this(code,msg);
+        this.reqId=reqId;
     }
     public String getMsg() {
         return msg;

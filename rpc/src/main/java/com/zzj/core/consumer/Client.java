@@ -3,7 +3,6 @@ package com.zzj.core.consumer;
 import com.zzj.core.common.codec.LengthFrameDecoder;
 import com.zzj.core.common.codec.RequestEncoder;
 import com.zzj.core.common.codec.ResponseDecoder;
-import com.zzj.core.common.utils.ChannelConfig;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;

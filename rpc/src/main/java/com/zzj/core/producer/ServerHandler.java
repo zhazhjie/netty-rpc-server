@@ -29,10 +29,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
             Method method = targetType.getMethod(reqData.getMethodName(), reqData.getArgsType());
             Object invoke = method.invoke(o, reqData.getArgs());
             respData.setResult(invoke);
-            respData.setResultType(invoke == null ? null : invoke.getClass());
-            //失败抛异常或响应失败结果？
+            respData.setResultType(method.getReturnType());
+            respData.setSuccess(true);
         } catch (Exception e) {
-            respData.setSuccess(false);
+            e.printStackTrace();
             respData.setMsg(e.getMessage());
         }
         ctx.writeAndFlush(respData);

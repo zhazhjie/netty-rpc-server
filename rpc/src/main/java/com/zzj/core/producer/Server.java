@@ -43,7 +43,7 @@ public class Server {
                             }
                         });
                 ChannelFuture channelFuture = serverBootstrap.bind().sync();
-                log.info("Server start success on port {}", port);
+                log.info("Server start on port {}", port);
                 channelFuture.channel().closeFuture().sync();
             } catch (Exception e) {
                 e.printStackTrace();

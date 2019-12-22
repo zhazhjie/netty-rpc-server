@@ -19,4 +19,9 @@ public class RequestEncoder extends MessageToByteEncoder<ReqData> {
         out.writeInt(jsonData.length());
         out.writeBytes(jsonData.getBytes());
     }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+    }
 }

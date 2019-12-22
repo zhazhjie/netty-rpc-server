@@ -11,6 +11,6 @@ public class RespData implements Serializable {
     private Long id;
     private Object result;
     private Class resultType;
-    private boolean success=true;
-    private String msg="success";
+    private boolean success;
+    private String msg;
 }

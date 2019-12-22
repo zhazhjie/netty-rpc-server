@@ -11,9 +11,10 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
  * (int)length+(json)body
  */
 public class LengthFrameDecoder extends LengthFieldBasedFrameDecoder {
-    public LengthFrameDecoder(int maxFrameLength,int lengthFieldOffset,int lengthFieldLength){
-        super(maxFrameLength,lengthFieldOffset,lengthFieldLength);
+    public LengthFrameDecoder(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
+        super(maxFrameLength, lengthFieldOffset, lengthFieldLength);
     }
+
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
         int expectLength = in.readInt();
@@ -22,5 +23,8 @@ public class LengthFrameDecoder extends LengthFieldBasedFrameDecoder {
         return bytes;
     }
 
-
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+    }
 }
